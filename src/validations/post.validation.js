@@ -49,10 +49,17 @@ const updatePost = {
   pinned: yup.boolean(),
 }
 
+const deletePost = {
+  postId: yup
+    .string()
+    .matches(config.regexObjectId, transValidations.objectId_type_incorrect)
+    .required(),
+}
 
 export default {
   createPost,
   getPosts,
   getPost,
   updatePost,
+  deletePost,
 }
