@@ -40,11 +40,19 @@ const getPost = {
     .required(),
 }
 
+const updatePost = {
+  postId: yup
+    .string()
+    .matches(config.regexObjectId, transValidations.objectId_type_incorrect)
+    .required(),
+  content: yup.string(),
+  pinned: yup.boolean(),
+}
 
 
 export default {
   createPost,
   getPosts,
   getPost,
-
+  updatePost,
 }
