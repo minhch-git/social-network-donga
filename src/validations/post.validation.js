@@ -40,37 +40,11 @@ const getPost = {
     .required(),
 }
 
-const updatePost = {
-  postId: yup
-    .string()
-    .matches(config.regexObjectId, transValidations.objectId_type_incorrect)
-    .required(),
-  content: yup.string(),
-  pinned: yup.boolean(),
-}
 
-const deletePost = {
-  postId: yup
-    .string()
-    .matches(config.regexObjectId, transValidations.objectId_type_incorrect)
-    .required(),
-}
-
-const updateMe = {
-  firstName: yup.string(),
-  lastName: yup.string(),
-  email: yup.string().email(),
-  checkbox_selection: yup.string().when(['firstName', 'lastName', 'email'], {
-    is: (firstName, lastName, email) => !firstName && !lastName && !email,
-    then: yup.string().required(),
-  }),
-}
 
 export default {
   createPost,
   getPosts,
   getPost,
-  updatePost,
-  deletePost,
-  updateMe,
+
 }
