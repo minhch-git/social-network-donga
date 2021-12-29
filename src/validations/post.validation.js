@@ -56,10 +56,21 @@ const deletePost = {
     .required(),
 }
 
+const updateMe = {
+  firstName: yup.string(),
+  lastName: yup.string(),
+  email: yup.string().email(),
+  checkbox_selection: yup.string().when(['firstName', 'lastName', 'email'], {
+    is: (firstName, lastName, email) => !firstName && !lastName && !email,
+    then: yup.string().required(),
+  }),
+}
+
 export default {
   createPost,
   getPosts,
   getPost,
   updatePost,
   deletePost,
+  updateMe,
 }
