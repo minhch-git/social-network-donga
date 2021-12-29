@@ -89,6 +89,39 @@ const updatePosts = async (filter, postBody) => {
   return posts
 }
 
+/**
+ * Delte post by id
+ * @param {ObjectId} postId
+ * @returns {Promise<post>}
+ */
+ const deletePostById = async postId => {
+  const post = await getPostById(postId)
+  if (!post) {
+    throw createError.NotFound()
+  }
+  const result = await post.remove()
+  return result
+}
+
+/**
+ * Delte post by id
+ * @param {Object} filter
+ * @returns {Promise<post>}
+ */
+const deletePost = async filter => {
+  const post = await Post.findOneAndDelete(filter)
+  return post
+}
+/**
+ * Delte post by id
+ * @param {Object} filter
+ * @returns {Promise<post>}
+ */
+const deleteManyPost = async filter => {
+  const posts = await Post.deleteMany(filter)
+  return posts
+}
+
 export default {
   createPost,
   queryPosts,
@@ -97,4 +130,7 @@ export default {
   getPostById,
   updatePostById,
   updatePosts,
+  deletePostById,
+  deletePost,
+  deleteManyPost,
 }
