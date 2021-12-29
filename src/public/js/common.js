@@ -1,4 +1,4 @@
-**
+/**
  * Convert a Date into a Human-Readable
  * @param {data} current date
  * @param {date} previous date
