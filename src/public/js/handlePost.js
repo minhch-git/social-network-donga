@@ -62,6 +62,31 @@ const unpinPost = async (postId, postContainer) => {
     buttonPinning.setAttribute('data-bs-target', '#pinPostModal')
     postContainer.parentElement.querySelector('.pinnedText').remove()
 }
+
+// retweet-button
+const retweetPost = async (postId, retweetButton) => {
+    const { post } = await httpPost(`/posts/${postId}/retweet`, {})
+  
+    const isReweet = retweetButton.parentElement.classList.toggle('active')
+    const numberRetweetsBtn = retweetButton.parentElement.querySelector(
+        'span.number-retweets'
+    )
+    // Add or remove element
+  
+    // unretweet
+    if (!isReweet) {
+        numberRetweetsBtn.innerHTML = +numberRetweetsBtn.innerHTML - 1
+        // remove post retweet
+        $(`.post-retweet[data-id="${postId}"]`).remove()
+        return
+    }
+  
+    // retweet
+    numberRetweetsBtn.innerHTML = +numberRetweetsBtn.innerHTML + 1
+    // render post retweet
+    outputPost(post)
+}
+  
   
 document.addEventListener('DOMContentLoaded', () => {
     handlePost()
