@@ -14,7 +14,14 @@ const createPost = async () => {
             cancelButtonColor: '#d33',
             confirmButtonText: 'Post',
         })
-        
+        if (text) {
+            // call API
+            const { post } = await httpPost(`/posts`, {
+            content: text,
+            })
+            outputPost(post)
+            if ($('.posts-empty')) $('.posts-empty').remove()
+        }
     }
 }
   
