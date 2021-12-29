@@ -87,6 +87,45 @@ const retweetPost = async (postId, retweetButton) => {
     outputPost(post)
 }
   
+const handlePost = async () => {
+    let postId = null
+    let postContainer = null
+    $('.posts_container').onclick = async e => {
+        postContainer = e.target.closest('.post')
+        if (postContainer) {
+            postId = postContainer.dataset.id
+        }
+    
+        // Like post
+        if (e.target.closest('.like-button')) likePost(postId, e.target)
+    
+        // retweet post
+        if (e.target.closest('.retweet-button')) retweetPost(postId, e.target)
+    }
+  
+    $('#pinPostModal').addEventListener('shown.bs.modal', e => {
+        e.target.onclick = async e => {
+            if (e.target.closest('#submitPinPost')) {
+            pinPost(postId, postContainer)
+            }
+        }
+    })
+  
+    $('#unpinPostModal').addEventListener('shown.bs.modal', e => {
+        e.target.onclick = async e => {
+            if (e.target.closest('#submitUnpinPost')) {
+            unpinPost(postId, postContainer)
+            }
+        }
+    })
+  
+    $('#deletePostModal').addEventListener('shown.bs.modal', e => {
+        e.target.onclick = async e => {
+            if (e.target.closest('#submitDeletePost'))
+            return deletePost(postId, postContainer)
+        }
+    })
+}
   
 document.addEventListener('DOMContentLoaded', () => {
     handlePost()
