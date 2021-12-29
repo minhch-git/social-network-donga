@@ -62,8 +62,39 @@ const getPostById = async postId => {
   return post
 }
 
+/**
+ * Update post by id
+ * @param {ObjectId} postId
+ * @param {Object} body
+ * @returns {Promise<post>}
+ */
+ const updatePostById = async (postId, postBody) => {
+  const postUpdated = await Post.findByIdAndUpdate(postId, postBody, {
+    new: true,
+  }).populate('postedBy')
+  if (!postUpdated) {
+    throw createError.NotFound()
+  }
+  return postUpdated
+}
+
+/**
+ * Update post by id
+ * @param {Object} filter
+ * @param {Object} postBody
+ * @returns {Promise<posts>}
+ */
+const updatePosts = async (filter, postBody) => {
+  const posts = await Post.updateMany(filter, postBody, { new: true })
+  return posts
+}
+
 export default {
   createPost,
   queryPosts,
-  
+  getPosts,
+  getPost,
+  getPostById,
+  updatePostById,
+  updatePosts,
 }
