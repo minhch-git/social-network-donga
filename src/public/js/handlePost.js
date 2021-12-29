@@ -13,6 +13,19 @@ const likePost = async (postId, likeButton) => {
     numberLikesBtn.innerHTML = +numberLikesBtn.innerHTML + 1
 }
 
+// Delete post
+const deletePost = async (postId, postContainer) => {
+    const data = await httpDelete(`/posts/${postId}`)
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: `<span>${data.message}</span>`,
+        showConfirmButton: false,
+        timer: 1200,
+        background: '#15202b',
+    })
+    postContainer.remove()
+}
   
 document.addEventListener('DOMContentLoaded', () => {
     handlePost()
