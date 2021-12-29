@@ -15,13 +15,7 @@ const loadPostsHome = async () => {
     }).then(result => {
         if (result.isConfirmed) return (window.location.href = '/search')
   
-        $('.posts').innerHTML = `
-            <div class="posts-empty text-center d-flex align-items-center px-4" style="height: 200px;">
-                <p class="w-100">Bạn chưa có bài viết, tìm kiếm bạn bè quanh đây
-                <a class="text-primary" href="/search">tìm bạn bè</a> hoặc đăng bài viết?
-                </p>
-            </div>
-            `
+        
     })
 }
   
