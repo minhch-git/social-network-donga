@@ -39,15 +39,8 @@ const queryPosts = async (filter, options) => {
  * @param {Object} filter
  * @returns {Promise<posts>}
  */
-const getPosts = async filter => {
+ const getPosts = async filter => {
   const posts = await Post.find(filter)
-    .populate('postedBy')
-    .populate({
-      path: 'replyTo',
-      populate: {
-        path: 'postedBy',
-      },
-    })
   return posts
 }
 /**
@@ -56,25 +49,7 @@ const getPosts = async filter => {
  * @returns {Promise<post>}
  */
 const getPost = async filter => {
-  const post = await Post.findOne(filter)
-    .populate('postedBy')
-    .populate({
-      path: 'replyTo',
-      populate: {
-        path: 'postedBy',
-      },
-    })
-  return post
-}
-
-/**
- * Find user by username
- * @param {Object} filter
- * @returns {Promise<Number>}
- */
-const getTotalPosts = async (filter = {}) => {
-  const totalPosts = await Post.countDocuments(filter)
-  return totalPosts
+  return Post.findOne(filter)
 }
 
 /**
@@ -84,13 +59,6 @@ const getTotalPosts = async (filter = {}) => {
  */
 const getPostById = async postId => {
   const post = await Post.findById(postId)
-    .populate('postedBy')
-    .populate({
-      path: 'replyTo',
-      populate: {
-        path: 'postedBy',
-      },
-    })
   return post
 }
 
@@ -100,17 +68,10 @@ const getPostById = async postId => {
  * @param {Object} body
  * @returns {Promise<post>}
  */
-const updatePostById = async (postId, postBody) => {
+ const updatePostById = async (postId, postBody) => {
   const postUpdated = await Post.findByIdAndUpdate(postId, postBody, {
     new: true,
-  })
-    .populate('postedBy')
-    .populate({
-      path: 'replyTo',
-      populate: {
-        path: 'postedBy',
-      },
-    })
+  }).populate('postedBy')
   if (!postUpdated) {
     throw createError.NotFound()
   }
@@ -133,7 +94,7 @@ const updatePosts = async (filter, postBody) => {
  * @param {ObjectId} postId
  * @returns {Promise<post>}
  */
-const deletePostById = async postId => {
+ const deletePostById = async postId => {
   const post = await getPostById(postId)
   if (!post) {
     throw createError.NotFound()
@@ -161,76 +122,15 @@ const deleteManyPost = async filter => {
   return posts
 }
 
-/**
- * Get top posts by number likes
- * @param {Object} options
- * @returns {Promise<posts>}
- */
-const getPostsBySortNumberLikes = async options => {
-  let sort = { numberLikes: -1, numberRetweetUsers: -1 }
-  if (options.sortBy === 'numberLikes') {
-    sort.numberLikes = 1
-  }
-
-  let page = options.page || 1
-  let limit = options.limit || 10
-  limit = parseInt(limit, 10)
-  const skip = (page - 1) * limit
-  const totalPosts = await Post.countDocuments({})
-  const totalPages = Math.ceil(totalPosts / limit)
-
-  const posts = await Post.aggregate([
-    {
-      $lookup: {
-        from: User.collection.name,
-        localField: 'postedBy',
-        foreignField: '_id',
-        as: 'postedBy',
-      },
-    },
-    {
-      $unwind: {
-        path: '$postedBy',
-      },
-    },
-    {
-      $project: {
-        numberLikes: { $size: '$likes' },
-        numberRetweetUsers: { $size: '$retweetUsers' },
-        _id: '$_id',
-        id: '$_id',
-        postedBy: '$postedBy',
-        content: '$content',
-        likes: '$likes',
-        retweetUsers: '$retweetUsers',
-        createdAt: '$createdAt',
-      },
-    },
-    { $match: { content: { $ne: null } } },
-    { $sort: sort },
-    { $skip: skip },
-    { $limit: limit },
-  ])
-  const result = {
-    posts,
-    page,
-    limit,
-    totalPosts,
-    totalPages,
-  }
-  return result
-}
 export default {
   createPost,
   queryPosts,
   getPosts,
   getPost,
   getPostById,
-  getTotalPosts,
   updatePostById,
   updatePosts,
   deletePostById,
   deletePost,
   deleteManyPost,
-  getPostsBySortNumberLikes,
 }
