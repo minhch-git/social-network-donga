@@ -1,3 +1,17 @@
+const likePost = async (postId, likeButton) => {
+    await httpPatch(`/posts/${postId}/like`, {})
+    const isLiked = likeButton.parentElement.classList.toggle('active')
+    const numberLikesBtn =
+        likeButton.parentElement.querySelector('span.number-likes')
+    // displike
+    if (!isLiked) {
+        numberLikesBtn.innerHTML = +numberLikesBtn.innerHTML - 1
+        return
+    }
+  
+    // like
+    numberLikesBtn.innerHTML = +numberLikesBtn.innerHTML + 1
+}
 
 // Delete post
 const deletePost = async (postId, postContainer) => {
@@ -28,6 +42,26 @@ const pinPost = async (postId, postContainer) => {
     location.reload()
 }
   
+// Unpin post
+const unpinPost = async (postId, postContainer) => {
+    const data = await httpPatch(`/posts/${postId}`, { pinned: false })
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: `<span>Bỏ ghim...</span>`,
+        showConfirmButton: false,
+        timer: 800,
+        background: '#15202b',
+    })
+
+    // Handle button pinning
+    const buttonPinning = postContainer.parentElement.querySelector(
+        '.button-pinned-post.active'
+    )
+    buttonPinning.classList.remove('active')
+    buttonPinning.setAttribute('data-bs-target', '#pinPostModal')
+    postContainer.parentElement.querySelector('.pinnedText').remove()
+} 
   
 // retweet-button
 const retweetPost = async (postId, retweetButton) => {
